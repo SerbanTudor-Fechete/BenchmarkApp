@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "Android",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/Users/serba/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include",
+                "C:/Users/serba/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android"
+            ],
+            "defines": [],
+            "compilerPath": "C:/Users/serba/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}

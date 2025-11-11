@@ -1,15 +1,17 @@
 # Run with `dart run ffigen --config ffigen.yaml`.
 name: BenchmarkCoreBindings
 description: |
-  Bindings for `src/benchmark_core.h`.
+  Bindings for `src/cpu_module.h`.
 
   Regenerate bindings with `dart run ffigen --config ffigen.yaml`.
 output: 'lib/benchmark_core_bindings_generated.dart'
 headers:
   entry-points:
-    - 'src/benchmark_core.h'
+    - 'src/cpu_module.h'
   include-directives:
-    - 'src/benchmark_core.h'
+    - 'src/cpu_module.h'
+llvm-path:
+  - 'C:\Program Files\LLVM'
 preamble: |
   // ignore_for_file: always_specify_types
   // ignore_for_file: camel_case_types
