@@ -229,28 +229,39 @@ class _EfficiencyChartCard extends StatelessWidget {
     );
   }
 
-  double? _getMaxY() {
-    if (dataPoints.isEmpty) return null;
-    final max = dataPoints.map((e) => e.y).reduce((a, b) => a > b ? a : b);
-    if (max == 0) return 100;
-    return max * 1.2; 
+  double _getNiceMaxY() {
+    if (dataPoints.isEmpty) return 100;
+    
+    final maxVal = dataPoints.map((e) => e.y).reduce((a, b) => a > b ? a : b);
+    if (maxVal == 0) return 10;
+
+    double target = maxVal * 1.2;
+    
+    double magnitude = 1;
+    while (target > 10) {
+      target /= 10;
+      magnitude *= 10;
+    }
+    if (target <= 1) {target = 1;}
+    else if (target <= 2) {target = 2;}
+    else if (target <= 5) {target = 5;}
+    else {target = 10;}
+    
+    return target * magnitude;
   }
 
-  double _calculateInterval(List<FlSpot> spots, {required bool isX}) {
-    if (spots.isEmpty) return 1;
-
-    if (isX) {
-      final max = spots.last.x;
-      if (max <= 5) return 1;
-      return max / 5;
-    }
-
-    final max = _getMaxY() ?? 100;
-    return max / 4; 
+  double _calculateInterval(double max, {required bool isX}) {
+    if (isX) return 1; 
+    
+    if (max == 0) return 1;
+    return max / 5;
   }
 
   @override
   Widget build(BuildContext context) {
+    final double maxY = _getNiceMaxY();
+    final double intervalY = _calculateInterval(maxY, isX: false);
+
     return Container(
       height: 320,
       decoration: BoxDecoration(
@@ -324,6 +335,7 @@ class _EfficiencyChartCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 32),
+          
           Expanded(
             child: dataPoints.isEmpty
                 ? Center(
@@ -337,32 +349,54 @@ class _EfficiencyChartCard extends StatelessWidget {
                   )
                 : LineChart(
                     LineChartData(
-                      minY: 0, 
-                      maxY: _getMaxY(),
+                      minY: 0,
+                      maxY: maxY,
                       
                       gridData: FlGridData(
                         show: true,
-                        verticalInterval: _calculateInterval(dataPoints, isX: true),
-                        horizontalInterval: _calculateInterval(dataPoints, isX: false),
+                        drawVerticalLine: false, 
+                        horizontalInterval: intervalY,
                         getDrawingHorizontalLine: (_) =>
                             FlLine(color: Colors.grey[100], strokeWidth: 1),
-                        getDrawingVerticalLine: (_) =>
-                            FlLine(color: Colors.grey[100], strokeWidth: 1),
                       ),
+                      
                       titlesData: FlTitlesData(
-                        rightTitles: const AxisTitles(
-                            sideTitles: SideTitles(showTitles: false)),
                         topTitles: const AxisTitles(
                             sideTitles: SideTitles(showTitles: false)),
-                        leftTitles: const AxisTitles(
+                        rightTitles: const AxisTitles(
                             sideTitles: SideTitles(showTitles: false)),
+                        
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 40,
+                            interval: intervalY,
+                            getTitlesWidget: (value, meta) {
+                              if (value == 0) return const Text(""); 
+                              if (value == maxY) return const Text("");
+                              return Text(
+                                value >= 1000 
+                                  ? "${(value/1000).toStringAsFixed(1)}k" 
+                                  : value.toInt().toString(),
+                                style: TextStyle(
+                                  color: Colors.grey[300],
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        
                         bottomTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: true,
                             reservedSize: 30,
-                            interval: _calculateInterval(dataPoints, isX: true),
+                            interval: 1, 
                             getTitlesWidget: (value, meta) {
                               if (value == 0) return const SizedBox.shrink();
+                              if (value % 1 != 0) return const SizedBox.shrink();
+                              
                               return Padding(
                                 padding: const EdgeInsets.only(top: 8),
                                 child: Text(
@@ -377,7 +411,9 @@ class _EfficiencyChartCard extends StatelessWidget {
                           ),
                         ),
                       ),
+                      
                       borderData: FlBorderData(show: false),
+                      
                       lineTouchData: LineTouchData(
                         touchTooltipData: LineTouchTooltipData(
                           getTooltipColor: (_) => Colors.black87,
@@ -392,6 +428,7 @@ class _EfficiencyChartCard extends StatelessWidget {
                           },
                         ),
                       ),
+                      
                       lineBarsData: [
                         LineChartBarData(
                           spots: dataPoints,
@@ -399,6 +436,7 @@ class _EfficiencyChartCard extends StatelessWidget {
                           curveSmoothness: 0.2,
                           color: color,
                           barWidth: 3,
+                          isStrokeCapRound: true,
                           dotData: FlDotData(
                             show: true,
                             getDotPainter: (spot, percent, bar, index) =>
