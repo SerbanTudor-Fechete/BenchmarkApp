@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 
-// --- Define the FFI Export Macro ---
 #if defined(__GNUC__) && __GNUC__ >= 4
 #define FFI_PLUGIN_EXPORT __attribute__((visibility("default")))
 #else

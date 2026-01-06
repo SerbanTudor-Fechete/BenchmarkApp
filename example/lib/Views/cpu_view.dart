@@ -30,21 +30,21 @@ class _CpuViewBody extends StatelessWidget {
                 children: [
                   CircularProgressIndicator(),
                   SizedBox(height: 16),
-                  Text('Running benchmarks...'),
+                  Text('Running CPU benchmarks...'),
                 ],
               )
             : controller.error != null
-            ? Text(
-                'Error: ${controller.error}',
-                style: const TextStyle(color: Colors.red),
-                textAlign: TextAlign.center,
-              )
-            : results == null
-            ? ElevatedButton(
-                onPressed: () => controller.runBenchmarks(),
-                child: const Text('Run Benchmark'),
-              )
-            : _ResultsView(results: results),
+                ? Text(
+                    'Error: ${controller.error}',
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
+                  )
+                : results == null
+                    ? ElevatedButton(
+                        onPressed: () => controller.runBenchmarks(),
+                        child: const Text('Run CPU Benchmark'),
+                      )
+                    : _ResultsView(results: results),
       ),
     );
   }
@@ -57,20 +57,48 @@ class _ResultsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final totalDuration = results.fibonacciMs + results.matrixSingleMs + results.matrixMultiMs;
+    final totalScore = results.singleCoreScore + results.multiCoreScore;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text('Fibonacci: ${results.fibonacciMs.toStringAsFixed(2)} ms'),
-        Text('Matrix (Single-threaded): ${results.matrixSingleMs.toStringAsFixed(2)} ms'),
-        Text('Matrix (Multi-threaded): ${results.matrixMultiMs.toStringAsFixed(2)} ms'),
-        const SizedBox(height: 16),
-        Text('Single-Core Score: ${results.singleCoreScore}'),
-        Text('Multi-Core Score: ${results.multiCoreScore}'),
+        Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              children: [
+                Text(
+                  'CPU Score',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '$totalScore',
+                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blueAccent,
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Total Duration: ${totalDuration.toStringAsFixed(2)} ms',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.grey[600],
+                      ),
+                ),
+              ],
+            ),
+          ),
+        ),
         const SizedBox(height: 24),
-        ElevatedButton(
+        ElevatedButton.icon(
           onPressed: () => context.read<CpuBenchmarkController>().runBenchmarks(),
-          child: const Text('Run Again'),
+          icon: const Icon(Icons.refresh),
+          label: const Text('Run Again'),
         ),
       ],
     );

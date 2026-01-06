@@ -7,10 +7,13 @@ project(benchmark_core_library VERSION 0.0.1 LANGUAGES C)
 
 add_library(benchmark_core SHARED
   "cpu_module.c"
+  "specs_module.c"
+  "memory_module.c"
+  "gpu_module.c"
 )
 
 set_target_properties(benchmark_core PROPERTIES
-  PUBLIC_HEADER cpu_module.h
+  PUBLIC_HEADER "cpu_module.h;specs_module.h;memory_module.h;gpu_module.h"
   OUTPUT_NAME "benchmark_core"
 )
 
@@ -19,6 +22,6 @@ target_compile_definitions(benchmark_core PUBLIC DART_SHARED_LIB)
 if (ANDROID)
   # Support Android 15 16k page size
   find_library(log-lib log)
-  target_link_libraries(benchmark_core PRIVATE ${log-lib})
+  target_link_libraries(benchmark_core PRIVATE ${log-lib} EGL GLESv3)
   target_link_options(benchmark_core PRIVATE "-Wl,-z,max-page-size=16384")
 endif()

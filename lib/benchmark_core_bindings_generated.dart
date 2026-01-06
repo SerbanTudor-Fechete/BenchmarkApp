@@ -59,6 +59,50 @@ class BenchmarkCoreBindings {
       );
   late final _run_matrix_test_multithreaded = _run_matrix_test_multithreadedPtr
       .asFunction<RawBenchmarkResult Function(int)>();
+
+  SystemSpecs display_system_specs() {
+    return _display_system_specs();
+  }
+
+  late final _display_system_specsPtr =
+      _lookup<ffi.NativeFunction<SystemSpecs Function()>>(
+        'display_system_specs',
+      );
+  late final _display_system_specs = _display_system_specsPtr
+      .asFunction<SystemSpecs Function()>();
+
+  MemoryBandwidthResult run_memory_bandwidth_test(int size_in_mb) {
+    return _run_memory_bandwidth_test(size_in_mb);
+  }
+
+  late final _run_memory_bandwidth_testPtr =
+      _lookup<ffi.NativeFunction<MemoryBandwidthResult Function(ffi.Int)>>(
+        'run_memory_bandwidth_test',
+      );
+  late final _run_memory_bandwidth_test = _run_memory_bandwidth_testPtr
+      .asFunction<MemoryBandwidthResult Function(int)>();
+
+  MemoryLatencyResult run_memory_latency_test(int steps) {
+    return _run_memory_latency_test(steps);
+  }
+
+  late final _run_memory_latency_testPtr =
+      _lookup<ffi.NativeFunction<MemoryLatencyResult Function(ffi.Int)>>(
+        'run_memory_latency_test',
+      );
+  late final _run_memory_latency_test = _run_memory_latency_testPtr
+      .asFunction<MemoryLatencyResult Function(int)>();
+
+  double run_offscreen_render_benchmark(double duration_seconds) {
+    return _run_offscreen_render_benchmark(duration_seconds);
+  }
+
+  late final _run_offscreen_render_benchmarkPtr =
+      _lookup<ffi.NativeFunction<ffi.Double Function(ffi.Double)>>(
+        'run_offscreen_render_benchmark',
+      );
+  late final _run_offscreen_render_benchmark =
+      _run_offscreen_render_benchmarkPtr.asFunction<double Function(double)>();
 }
 
 final class RawBenchmarkResult extends ffi.Struct {
@@ -67,4 +111,40 @@ final class RawBenchmarkResult extends ffi.Struct {
 
   @ffi.Double()
   external double score;
+}
+
+final class SystemSpecs extends ffi.Struct {
+  @ffi.Array.multi([128])
+  external ffi.Array<ffi.Char> manufacturer;
+
+  @ffi.Array.multi([128])
+  external ffi.Array<ffi.Char> model;
+
+  @ffi.Array.multi([64])
+  external ffi.Array<ffi.Char> chipset_model;
+
+  @ffi.Array.multi([64])
+  external ffi.Array<ffi.Char> android_version;
+
+  @ffi.Uint64()
+  external int total_ram;
+
+  @ffi.Uint64()
+  external int cpu_cores;
+}
+
+final class MemoryBandwidthResult extends ffi.Struct {
+  @ffi.Double()
+  external double elapsed_ms;
+
+  @ffi.Double()
+  external double bandwidth_mb;
+}
+
+final class MemoryLatencyResult extends ffi.Struct {
+  @ffi.Double()
+  external double avg_ns;
+
+  @ffi.Int()
+  external int steps;
 }

@@ -2,6 +2,7 @@
     "files.associations": {
         "stdint.h": "c",
         "time.h": "c",
-        "initializer_list": "c"
+        "initializer_list": "c",
+        "system_properties.h": "c"
     }
 }

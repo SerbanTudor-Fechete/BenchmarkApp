@@ -19,32 +19,17 @@ class CPUResults {
 }
 
 class BenchmarkRunner {
-  static const double _baselineFibScore = 120.0;
-  static const double _baselineMatrixSingleScore = 2.5; // GFLOPs
-  static const double _baselineMatrixMultiScore = 20.0; // GFLOPs
-
-  static const double _fibWeight = 0.35;
-  static const double _matrixWeight = 0.65;
-
-  static const int _scalingFactor = 10000;
-
+ 
   Future<CPUResults> runAllTests() async {
-    final fibResult = await runFibonacciBenchmark(40);
-    final matrixMultiResult = await runMatrixBenchmarkMultiThreaded(2000);
-    final matrixSingleResult = await runMatrixBenchmarkSingleThreaded(2000);
-
-    double normFib = fibResult.score / _baselineFibScore;
-    double normMatrix = matrixSingleResult.score / _baselineMatrixSingleScore;
-    double normMulti = matrixMultiResult.score / _baselineMatrixMultiScore;
-
-    int singleCoreScore = ((normFib * _fibWeight) + (normMatrix * _matrixWeight) * _scalingFactor).round();
-    int multiCoreScore = (normMulti * _scalingFactor).round();
+    final fibResult = await runFibonacciBenchmark(45);
+    final matrixMultiResult = await runMatrixBenchmarkMultiThreaded(2500);
+    final matrixSingleResult = await runMatrixBenchmarkSingleThreaded(2500);
 
     return CPUResults(
       fibonacciMs: fibResult.elapsedMs,
       matrixSingleMs: matrixSingleResult.elapsedMs,
       matrixMultiMs: matrixMultiResult.elapsedMs,
-      singleCoreScore: (matrixSingleResult.score * 1000).toInt(),
+      singleCoreScore: (matrixSingleResult.score * 500 + fibResult.score * 500).toInt(),
       multiCoreScore: (matrixMultiResult.score * 1000).toInt(),
     );
   }

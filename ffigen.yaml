@@ -8,8 +8,14 @@ output: 'lib/benchmark_core_bindings_generated.dart'
 headers:
   entry-points:
     - 'src/cpu_module.h'
+    - 'src/specs_module.h'
+    - 'src/memory_module.h'
+    - 'src/gpu_module.h'
   include-directives:
     - 'src/cpu_module.h'
+    - 'src/specs_module.h'
+    - 'src/memory_module.h'
+    - 'src/gpu_module.h'
 llvm-path:
   - 'C:\Program Files\LLVM'
 preamble: |

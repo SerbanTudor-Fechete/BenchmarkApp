@@ -9,10 +9,6 @@
 #include <unistd.h>
 #include <android/log.h>
 
-#define LOG_TAG "BenchmarkCore"
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
-
 #define TIMESPEC_TO_MS(start, end) \
     (((double)((end).tv_sec - (start).tv_sec) * 1000.0) + \
     ((double)((end).tv_nsec - (start).tv_nsec) / 1000000.0))
@@ -81,7 +77,6 @@ FFI_PLUGIN_EXPORT RawBenchmarkResult run_fibonacci_test(int target_n){
     result.elapsed_ms = elapsed_ms;
     result.score =  (1.0 / elapsed_ms) * 1000.0; 
     
-    LOGI("Int score: %.5f", result.score);
     return result;
 }
 
@@ -104,7 +99,6 @@ FFI_PLUGIN_EXPORT RawBenchmarkResult run_matrix_test_singlethreaded(int size) {
     RawBenchmarkResult res;
     res.elapsed_ms = elapsed_ms;
     res.score = calculate_gflops(size, elapsed_ms);
-    LOGI("GFLOPs score singleThread: %.5f", res.score);
     return res;
 }
 
@@ -185,6 +179,5 @@ FFI_PLUGIN_EXPORT RawBenchmarkResult run_matrix_test_multithreaded(int size) {
     RawBenchmarkResult res;
     res.elapsed_ms = elapsed_ms;
     res.score = gflops;
-      LOGI("GFLOPs score multiThread: %.5f", res.score);
     return res;
 }
