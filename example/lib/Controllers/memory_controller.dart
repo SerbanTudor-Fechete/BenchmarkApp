@@ -36,7 +36,7 @@ class MemoryRunner {
     final lat = await runMemoryLatencyTest(latencySteps);
     
     final double latDurationMs = (latencySteps * lat.avgNs) / 1000000;
-    final int score = (avgBandwidth - (lat.avgNs * 100)).toInt().clamp(0, 100000);
+    final int score = (avgBandwidth - (lat.avgNs)).toInt().clamp(0, 100000);
 
     return MemoryResults(
       bandwidthMbPerSec: avgBandwidth,

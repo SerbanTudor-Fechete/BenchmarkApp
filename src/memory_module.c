@@ -67,9 +67,30 @@ FFI_PLUGIN_EXPORT MemoryLatencyResult run_memory_latency_test(int steps) {
     int *arr = (int *)malloc(sizeof(int) * steps);
     if (!arr) return res;
 
-    for (int i = 0; i < steps; i++) {
-        arr[i] = (i + 1) % steps;
+    int *indices = (int *)malloc(sizeof(int) * steps);
+    if (!indices) {
+        free(arr);
+        return res;
     }
+
+    for (int i = 0; i < steps; i++) {
+        indices[i] = i;
+    }
+
+    srand(time(NULL)); 
+    for (int i = steps - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        int temp = indices[i];
+        indices[i] = indices[j];
+        indices[j] = temp;
+    }
+
+    for (int i = 0; i < steps - 1; i++) {
+        arr[indices[i]] = indices[i + 1];
+    }
+    arr[indices[steps - 1]] = indices[0];
+
+    free(indices);
 
     volatile int index = 0;
 
